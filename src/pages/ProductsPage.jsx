@@ -1,26 +1,28 @@
 import { useQuery } from '@tanstack/react-query'
+import { useParams } from 'react-router-dom'
 import { getProducts } from '../services/products'
 
-// import { useCurrentPageValue/* useSelectPage */ } from '../context/CurrentPage'
+// import { useCurrentPageValue } from '../context/CurrentPage'
 
 import ProductList from '../components/ProductList'
-import CategoryList from '../components/CategoryList'
-import { Link } from 'react-router-dom'
+import Pagination from '../components/Pagination'
 
-const Home = () => {
+const ProductsPage = () => {
   // const currentPage = useCurrentPageValue()
-  // const selectPage = useSelectPage()
-  // selectPage(1)
+  const params = useParams()
+  const currentPage = parseInt(params.page)
 
-  const offset = '0'
+  const offset = ((currentPage - 1) * 10).toString()
+  // console.log(typeof (offset))
   const limit = '10' // product per page
 
   const {
     isLoading,
     isError,
     error,
-    data: products
+    data: products,
     // isFetching,
+    isPreviousData
   } = useQuery({
     queryKey: ['products', { offset, limit }],
     queryFn: () => getProducts({ offset, limit }),
@@ -35,16 +37,20 @@ const Home = () => {
     return <div>Error: {error}</div>
   }
 
+  // const products = result.data
+  console.log(products)
+  console.log(isPreviousData)
   return (
     <div>
-      <h1>Home</h1>
-      <CategoryList />
+      <h1>Products</h1>
       <ProductList products={products} />
-      <Link to='/page/1'>
-        <div>see all products</div>
-      </Link>
+      <Pagination
+        isPreviousData={isPreviousData}
+        currentPage={currentPage}
+        url='/page'
+      />
     </div>
   )
 }
 
-export default Home
+export default ProductsPage

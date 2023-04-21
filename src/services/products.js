@@ -5,3 +5,8 @@ export const getAllProducts = async () => {
   const response = await axios.get(baseUrl)
   return response.data
 }
+
+export const getProducts = async ({ offset = '0', limit = '10' }) => {
+  const response = await axios.get(`${baseUrl}?offset=${offset}&limit=${limit}`)
+  return response.data
+}
